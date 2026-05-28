@@ -1,0 +1,80 @@
+﻿Copiado en un solo Archivo de texto(Sumas comportamental):
+
+
+// 1. Sumador 4 bits comportamental (Sum_com4b.v) [cite: 39]
+module Sum_com4b (
+    input [3:0] A,
+    input [3:0] B,
+    input Ci4,
+    output [4:0] C
+);
+    assign C = A + B + Ci4;
+endmodule
+
+
+
+
+// 2. Sumador 8 bits comportamental (Sum_com8b.v) [cite: 39]
+module Sum_com8b (
+    input [7:0] el,
+    input [7:0] e2,
+    input Ci8,
+    output [8:0] c
+);
+    assign c = el + e2 + Ci8;
+endmodule
+
+
+
+
+// 3. Testbench 4 bits (Tb_Sum4b.v) [cite: 40]
+`timescale 1ns/1ps
+module Tb_Sum4b;
+    reg [3:0] A, B;
+    reg Ci4;
+    wire [4:0] C;
+
+
+    Sum_com4b uut (.A(A), .B(B), .Ci4(Ci4), .C(C));
+
+
+    initial begin
+        $display("Pruebas 4 Bits (Decimal):");
+        $monitor("A:%d + B:%d + Ci:%b = Res:%d", A, B, Ci4, C);
+        
+        A=0; B=0; Ci4=0; #10;
+        A=5; B=3; Ci4=1; #10;
+        A=10; B=5; Ci4=0; #10;
+        A=15; B=15; Ci4=0; #10;
+        A=7; B=8; Ci4=1; #10;
+        $finish;
+    end
+endmodule
+
+
+
+
+// 4. Testbench 8 bits (Tb_Sum8b.v) [cite: 40]
+`timescale 1ns/1ps
+module Tb_Sum8b;
+    reg [7:0] el, e2;
+    reg Ci8;
+    wire [8:0] c;
+
+
+    Sum_com8b uut (.el(el), .e2(e2), .Ci8(Ci8), .c(c));
+
+
+    initial begin
+        $display("Pruebas 8 Bits (Decimal):");
+        $monitor("e1:%d + e2:%d + Ci:%b = Res:%d", el, e2, Ci8, c);
+
+
+        el=0; e2=0; Ci8=0; #10;
+        el=100; e2=50; Ci8=1; #10;
+        el=200; e2=55; Ci8=0; #10;
+        el=128; e2=127; Ci8=1; #10;
+        el=255; e2=1; Ci8=0; #10;
+        $finish;
+    end
+endmodule

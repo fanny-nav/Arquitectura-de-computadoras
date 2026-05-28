@@ -1,0 +1,71 @@
+﻿Copiado en un solo Archivo de texto (Sumas instanciadas):
+
+
+// 1. Módulo Medio Sumador (HA.v)
+module HA (
+    input el, e2,
+    output s, A
+);
+    assign A = el & e2;
+    assign s = el ^ e2; 
+endmodule
+
+
+// 2. Módulo Sumador Completo (FA.v)
+module FA (
+        input a,
+        input b,
+        input c,
+        output S,
+        output A);
+
+
+wire c1;
+wire c2;
+wire c3;
+
+
+HA H1 (.e1(a), .e2(b), .s(c1), .A(c2));
+HA H2 (.e1(c), .e2(c2), .s(S), .A(c3));
+
+
+assign A = c1 | c3;
+
+
+endmodule
+
+
+
+
+// 3. Sumador de 4 bits instanciado (Sum_instancia4b.v) 
+module Sum_instancia4b (
+    input [3:0] A,
+    input [3:0] B,
+    input Ci4,
+    output [3:0] S,
+    output Co4
+);
+    wire c1, c2, c3;
+
+
+    FA F0 (.a(A[0]), .b(B[0]), .c(Ci4), .S(S[0]), .A(c1));
+    FA F1 (.a(A[1]), .b(B[1]), .c(c1),  .S(S[1]), .A(c2));
+    FA F2 (.a(A[2]), .b(B[2]), .c(c2),  .S(S[2]), .A(c3));
+    FA F3 (.a(A[3]), .b(B[3]), .c(c3),  .S(S[3]), .A(Co4));
+endmodule
+
+
+// 4. Sumador de 8 bits instanciado (Sum_instancia8b.v) 
+module Sum_instancia8b (
+    input [7:0] el,
+    input [7:0] e2,
+    input Ci8,
+    output [7:0] S8,
+    output Co8
+);
+    wire c_inter;
+
+
+    Sum_instancia4b ins41 (.A(el[3:0]), .B(e2[3:0]), .Ci4(Ci8),     .S(S8[3:0]), .Co4(c_inter));
+    Sum_instancia4b ins42 (.A(el[7:4]), .B(e2[7:4]), .Ci4(c_inter), .S(S8[7:4]), .Co4(Co8));
+endmodule
